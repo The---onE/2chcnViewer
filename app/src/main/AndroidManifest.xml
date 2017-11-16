@@ -37,7 +37,7 @@
             android:name="com.xmx.nichcn.module.log.OperationLogActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.xmx.nichcn.module.title.ArticleActivity"
+            android:name="com.xmx.nichcn.module.article.ArticleActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.xmx.nichcn.module.user.LoginActivity"

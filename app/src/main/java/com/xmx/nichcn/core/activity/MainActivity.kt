@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
@@ -16,17 +17,21 @@ import com.xmx.nichcn.common.data.DataManager
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.MyApplication
-import com.xmx.nichcn.module.title.ArticleActivity
+import com.xmx.nichcn.module.article.ArticleActivity
 import com.xmx.nichcn.module.user.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
+import android.support.v4.view.MenuItemCompat
+import android.support.v7.widget.SearchView
+
 
 /**
  * Created by The_onE on 2017/2/15.
  * 主Activity，显示主页
  */
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var mSearchView: SearchView? = null // 顶部搜索框
 
     override fun initView(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -40,6 +45,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
+
     }
 
     override fun setListener() {
@@ -157,5 +163,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             webBrowser.loadUrl(url)
             DataManager.setJumpUrl("")
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        mSearchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+        mSearchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?) = false
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null && query.isNotBlank()) {
+                    webBrowser.loadUrl("${CoreConstants.SEARCH_URL}$query")
+                }
+                return false
+            }
+
+        })
+
+        return super.onCreateOptionsMenu(menu)
     }
 }

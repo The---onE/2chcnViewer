@@ -10,19 +10,16 @@ import com.xmx.nichcn.base.activity.BaseTempActivity
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.CoreConstants
-import kotlinx.android.synthetic.main.activity_article.*
-import kotlinx.android.synthetic.main.tool_bar.*
-import java.util.regex.Pattern
-
+import kotlinx.android.synthetic.main.activity_login.*
 
 /**
  * Created by The_onE on 2017/11/16.
- * 文章页Activity
+ * 登录页Activity
  */
 class LoginActivity : BaseTempActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_article)
+        setContentView(R.layout.activity_login)
     }
 
     override fun setListener() {

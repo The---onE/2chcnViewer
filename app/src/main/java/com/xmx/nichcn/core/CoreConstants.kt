@@ -9,6 +9,7 @@ object CoreConstants {
 
     val HOME_URL = "http://2chcn.com/" // 首页地址
     val LOGIN_URL = "http://2chcn.com/wp-login.php" // 登录地址
+    val SEARCH_URL = "http://2chcn.com/?s=" // 搜索匹配
     val HOME_PATTERN = ".*2chcn.com(/page/\\d{1,8})?/" // 首页匹配
     val ARTICLE_PATTERN = ".*2chcn.com/\\d{1,8}/.*" // 文章匹配
     val CATEGORY_PATTERN = ".*2chcn.com/category/.*" // 分类匹配

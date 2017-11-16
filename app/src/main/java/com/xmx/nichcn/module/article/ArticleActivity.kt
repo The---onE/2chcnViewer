@@ -1,4 +1,4 @@
-package com.xmx.nichcn.module.title
+package com.xmx.nichcn.module.article
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -15,7 +15,6 @@ import com.xmx.nichcn.core.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
-
 
 /**
  * Created by The_onE on 2017/11/16.
