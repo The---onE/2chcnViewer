@@ -3,6 +3,7 @@ package com.xmx.nichcn.core
 import android.app.Activity
 import android.app.Service
 import android.support.multidex.MultiDexApplication
+import com.xmx.nichcn.common.data.DataManager
 
 import java.util.*
 
@@ -55,5 +56,7 @@ class MyApplication : MultiDexApplication() {
 
         // 注册异常处理器
         CrashHandler.init(this)
+
+        DataManager.setContext(this)
     }
 }

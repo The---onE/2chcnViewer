@@ -8,11 +8,16 @@ object CoreConstants {
     val EXCEPTION_DEBUG = true // 是否为调试模式
 
     val HOME_URL = "http://2chcn.com/" // 首页地址
+    val LOGIN_URL = "http://2chcn.com/wp-login.php" // 登录地址
     val HOME_PATTERN = ".*2chcn.com(/page/\\d{1,8})?/" // 首页匹配
     val ARTICLE_PATTERN = ".*2chcn.com/\\d{1,8}/.*" // 文章匹配
     val CATEGORY_PATTERN = ".*2chcn.com/category/.*" // 分类匹配
     val TAG_PATTERN = ".*2chcn.com/tag/.*" // 标签匹配
     val SEARCH_PATTERN = ".*2chcn.com/\\?s=.*" // 搜索匹配
+
+    val VIP_TAG = "【会员】" // 会员标签
+    val NICH_TAG = "2ch：" // 会员标签
+    val TWITTER_TAG = "twitter：" // 会员标签
 
     private val FILE_DIR = "/Framework" // 应用数据目录
     val DATABASE_DIR = FILE_DIR + "/Database" // 数据库目录

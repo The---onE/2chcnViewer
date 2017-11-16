@@ -1,4 +1,4 @@
-package com.xmx.nichcn.module.title
+package com.xmx.nichcn.module.user
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,11 +7,9 @@ import android.view.View
 import android.webkit.WebView
 import com.xmx.nichcn.R
 import com.xmx.nichcn.base.activity.BaseTempActivity
-import com.xmx.nichcn.common.data.DataManager
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.CoreConstants
-import com.xmx.nichcn.core.activity.MainActivity
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
@@ -21,17 +19,10 @@ import java.util.regex.Pattern
  * Created by The_onE on 2017/11/16.
  * 文章页Activity
  */
-class ArticleActivity : BaseTempActivity() {
-    private val mUrl: String by lazy {
-        intent.getStringExtra("url")
-    }
+class LoginActivity : BaseTempActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_article)
-        if (mUrl.isBlank()) {
-            finish()
-        }
-        toolbar.setTitle(R.string.loading)
     }
 
     override fun setListener() {
@@ -39,10 +30,6 @@ class ArticleActivity : BaseTempActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun processLogic(savedInstanceState: Bundle?) {
-        if (mUrl.isBlank()) {
-            return
-        }
-
         // 允许JS执行
         webBrowser.settings.javaScriptEnabled = true
 
@@ -50,28 +37,7 @@ class ArticleActivity : BaseTempActivity() {
         webBrowser.webViewClient = object : BaseWebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 if (url != null && url.isNotBlank()) {
-                    if (url.startsWith(mUrl)) {
-                        view?.loadUrl(url)
-                    } else {
-                        when {
-                        // 首页
-                            Pattern.matches(CoreConstants.HOME_PATTERN, url) -> {
-                                DataManager.setJumpUrl(url)
-                                startActivity(MainActivity::class.java)
-                                finish()
-                            }
-                        // 分类页
-                            Pattern.matches(CoreConstants.CATEGORY_PATTERN, url) ||
-                                    // 标签页
-                                    Pattern.matches(CoreConstants.TAG_PATTERN, url) ||
-                                    // 搜索页
-                                    Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
-                                view?.loadUrl(url)
-                        // 文章页
-                            Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
-                                startActivity(ArticleActivity::class.java, "url", url)
-                        }
-                    }
+                    view?.loadUrl(url)
                 }
                 return true
             }
@@ -80,7 +46,7 @@ class ArticleActivity : BaseTempActivity() {
         // 设置自定义页面事件处理(alert,prompt等页面事件)
         webBrowser.webChromeClient = object : BaseWebChromeClient() {
             override fun onAlert(message: String) {
-                val builder = AlertDialog.Builder(this@ArticleActivity)
+                val builder = AlertDialog.Builder(this@LoginActivity)
                 builder.setMessage(message)
                         .setTitle("提示")
                         .setPositiveButton("确定", { dialogInterface, _ ->
@@ -96,23 +62,6 @@ class ArticleActivity : BaseTempActivity() {
                         progressBar.visibility = View.VISIBLE
                         progressBar.setProgress(newProgress)
                     }
-
-            override fun onReceivedTitle(view: WebView?, title: String?) {
-                super.onReceivedTitle(view, title)
-                title?.apply {
-                    var temp = title
-                    if (temp.startsWith(CoreConstants.VIP_TAG)) {
-                        temp = temp.substring(CoreConstants.VIP_TAG.length)
-                    }
-                    if (temp.startsWith(CoreConstants.NICH_TAG)) {
-                        temp = temp.substring(CoreConstants.NICH_TAG.length)
-                    }
-                    if (temp.startsWith(CoreConstants.TWITTER_TAG)) {
-                        temp = temp.substring(CoreConstants.TWITTER_TAG.length)
-                    }
-                    toolbar.title = temp
-                }
-            }
         }
 
         // 设置可以支持缩放
@@ -125,6 +74,6 @@ class ArticleActivity : BaseTempActivity() {
         webBrowser.settings.loadWithOverviewMode = true
 
         // 打开网络网页
-        webBrowser.loadUrl(mUrl)
+        webBrowser.loadUrl(CoreConstants.LOGIN_URL)
     }
 }

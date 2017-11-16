@@ -12,22 +12,21 @@ import android.webkit.WebView
 import com.xmx.nichcn.core.CoreConstants
 import com.xmx.nichcn.R
 import com.xmx.nichcn.base.activity.BaseActivity
+import com.xmx.nichcn.common.data.DataManager
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
+import com.xmx.nichcn.core.MyApplication
 import com.xmx.nichcn.module.title.ArticleActivity
+import com.xmx.nichcn.module.user.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
-import android.view.View.GONE
-
 
 /**
  * Created by The_onE on 2017/2/15.
- * 主Activity，利用Fragment展示所有程序内容
+ * 主Activity，显示主页
  */
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
-    // 侧滑菜单登录菜单项
-    private var loginItem: MenuItem? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -57,16 +56,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 if (url != null && url.isNotBlank()) {
                     when {
                     // 首页
-                        Pattern.matches(CoreConstants.HOME_PATTERN, url) ->
-                            view?.loadUrl(url)
-                    // 分类页
-                        Pattern.matches(CoreConstants.CATEGORY_PATTERN, url) ->
-                            view?.loadUrl(url)
-                    // 标签页
-                        Pattern.matches(CoreConstants.TAG_PATTERN, url) ->
-                            view?.loadUrl(url)
-                    // 搜索页
-                        Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
+                        Pattern.matches(CoreConstants.HOME_PATTERN, url) ||
+                                // 分类页
+                                Pattern.matches(CoreConstants.CATEGORY_PATTERN, url) ||
+                                // 标签页
+                                Pattern.matches(CoreConstants.TAG_PATTERN, url) ||
+                                // 搜索页
+                                Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
                             view?.loadUrl(url)
                     // 文章页
                         Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
@@ -109,10 +105,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun processLogic(savedInstanceState: Bundle?) {
-        // 设置侧滑菜单
-        val menu = nav_view.menu
-        loginItem = menu.findItem(R.id.nav_user)
-
         // 初始化浏览器
         initBrowser()
         // 打开网页
@@ -123,6 +115,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // 显示选择的选项卡
         when (item.itemId) {
+            R.id.nav_refresh ->
+                webBrowser.reload()
+            R.id.nav_user ->
+                startActivity(LoginActivity::class.java)
+            R.id.nav_exit ->
+                MyApplication.getInstance().exit()
         }
         // 关闭侧边栏
         drawer.closeDrawer(GravityCompat.START)
@@ -149,6 +147,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mExitTime = System.currentTimeMillis()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val url = DataManager.getJumpUrl()
+        if (url.isNotBlank()) {
+            webBrowser.loadUrl(url)
+            DataManager.setJumpUrl("")
         }
     }
 }
