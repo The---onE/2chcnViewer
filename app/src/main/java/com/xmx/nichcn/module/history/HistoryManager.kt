@@ -28,6 +28,15 @@ object HistoryManager {
         updateData()
     }
 
+    /**
+     * 删除历史记录
+     * @param id ID
+     */
+    fun deleteHistory(id: Long) {
+        historyManager.deleteById(id)
+        updateData()
+    }
+
     fun clearHistory() {
         historyManager.clearDatabase()
         updateData()

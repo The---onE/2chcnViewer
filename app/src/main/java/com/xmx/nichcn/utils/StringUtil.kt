@@ -1,5 +1,7 @@
 package com.xmx.nichcn.utils
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.support.annotation.StringRes
 import android.util.Log
@@ -63,5 +65,16 @@ object StringUtil {
      */
     fun showLog(tag: String, i: Int) {
         Log.e(tag, "$i")
+    }
+
+    /**
+     * 复制到剪贴板
+     * @param context 当前上下文
+     * @param text 要复制的内容
+     */
+    fun copyToClipboard(context: Context, text: String) {
+        val cmb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText("label", text) //文本型数据 clipData 的构造方法。
+        cmb.primaryClip = clipData
     }
 }

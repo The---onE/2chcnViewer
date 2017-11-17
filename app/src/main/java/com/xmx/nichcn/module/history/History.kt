@@ -10,7 +10,7 @@ import java.util.*
  * 历史记录实体
  */
 class History : ISQLEntity {
-    private var mId: Long = -1
+    var mId: Long = -1
     // 地址
     var mUrl = ""
     // 标题

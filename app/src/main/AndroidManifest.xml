@@ -40,6 +40,9 @@
             android:name="com.xmx.nichcn.module.article.ArticleActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name="com.xmx.nichcn.module.user.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name="com.xmx.nichcn.module.history.HistoryActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.xmx.nichcn.common.notification.NotificationTempActivity" />

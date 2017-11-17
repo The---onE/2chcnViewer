@@ -5,6 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.SearchView
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import com.xmx.nichcn.R
@@ -15,6 +18,7 @@ import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.CoreConstants
 import com.xmx.nichcn.core.activity.MainActivity
 import com.xmx.nichcn.module.history.HistoryManager
+import com.xmx.nichcn.utils.StringUtil
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
@@ -27,8 +31,11 @@ class ArticleActivity : BaseTempActivity() {
     private var historyFlag = false // 是否已记入历史记录
     // 文章地址
     private val mUrl: String by lazy {
-        intent.getStringExtra(ArticleUtil.URL_EXTRA)
+        currentUrl = intent.getStringExtra(ArticleUtil.URL_EXTRA)
+        currentUrl ?: ""
     }
+    // 当前地址
+    private var currentUrl: String? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_article)
@@ -69,8 +76,10 @@ class ArticleActivity : BaseTempActivity() {
                                     // 标签页
                                     Pattern.matches(CoreConstants.TAG_PATTERN, url) ||
                                     // 搜索页
-                                    Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
+                                    Pattern.matches(CoreConstants.SEARCH_PATTERN, url) -> {
                                 view?.loadUrl(url)
+                                currentUrl = url
+                            }
                         // 图片页
                             Pattern.matches(CoreConstants.IMAGE_PATTERN, url) -> {
                                 val intent = Intent(Intent.ACTION_VIEW)
@@ -80,6 +89,8 @@ class ArticleActivity : BaseTempActivity() {
                         // 文章页
                             Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
                                 ArticleUtil.openArticle(this@ArticleActivity, url)
+                            else ->
+                                StringUtil.copyToClipboard(this@ArticleActivity, url)
                         }
                     }
                 }
@@ -151,5 +162,23 @@ class ArticleActivity : BaseTempActivity() {
 
         // 打开网络网页
         webBrowser.loadUrl(mUrl)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.article, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.action_refresh ->
+                webBrowser.reload()
+            R.id.action_browser -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(currentUrl)
+                startActivity(intent)
+            }
+        }
+        return true
     }
 }

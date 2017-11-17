@@ -1,11 +1,11 @@
 package com.xmx.nichcn.module.history
 
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
+import android.support.v7.app.AlertDialog
 import com.xmx.nichcn.R
 import com.xmx.nichcn.base.activity.BaseTempActivity
 import com.xmx.nichcn.module.article.ArticleUtil
+import com.xmx.nichcn.utils.StringUtil
 import kotlinx.android.synthetic.main.activity_history.*
 
 import java.util.ArrayList
@@ -33,10 +33,30 @@ class HistoryActivity : BaseTempActivity() {
                 historyAdapter?.updateList(this)
             }
         }
-
+        // 点击进入对应文章页
         listHistory.setOnItemClickListener { _, _, i, _ ->
             val item = historyAdapter?.getItem(i) as History
             ArticleUtil.openArticle(this, item.mUrl)
+        }
+        // 长按提示操作
+        listHistory.setOnItemLongClickListener { _, _, i, _ ->
+            val item = historyAdapter?.getItem(i) as History
+            AlertDialog.Builder(this)
+                    .setMessage("要操作该记录吗？")
+                    .setTitle("提示")
+                    // 删除
+                    .setPositiveButton("删除") { _, _ ->
+                        HistoryManager.deleteHistory(item.mId)
+                        HistoryManager.data?.apply {
+                            historyAdapter?.updateList(this)
+                        }
+                    }
+                    .setNegativeButton("复制链接") { _, _ ->
+                        StringUtil.copyToClipboard(this, item.mUrl)
+                    }
+                    .setNeutralButton("取消") { dialogInterface, _ -> dialogInterface.dismiss() }
+                    .show()
+            true
         }
     }
 

@@ -27,6 +27,7 @@ import com.xmx.nichcn.module.history.HistoryActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.Intent
 import android.net.Uri
+import com.xmx.nichcn.utils.StringUtil
 
 
 /**
@@ -82,6 +83,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     // 文章页
                         Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
                             ArticleUtil.openArticle(this@MainActivity, url)
+                        else ->
+                            StringUtil.copyToClipboard(this@MainActivity, url)
                     }
                 }
                 return true
