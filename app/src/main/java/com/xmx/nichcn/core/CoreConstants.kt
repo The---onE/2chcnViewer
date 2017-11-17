@@ -12,15 +12,19 @@ object CoreConstants {
     val SEARCH_URL = "http://2chcn.com/?s=" // 搜索匹配
     val HOME_PATTERN = ".*2chcn.com(/page/\\d{1,8})?/" // 首页匹配
     val ARTICLE_PATTERN = ".*2chcn.com/\\d{1,8}/.*" // 文章匹配
+    val IMAGE_PATTERN = ".*img.2chcn.com/.*\\..*" // 图片匹配
     val CATEGORY_PATTERN = ".*2chcn.com/category/.*" // 分类匹配
     val TAG_PATTERN = ".*2chcn.com/tag/.*" // 标签匹配
     val SEARCH_PATTERN = ".*2chcn.com/\\?s=.*" // 搜索匹配
 
     val VIP_TAG = "【会员】" // 会员标签
     val NICH_TAG = "2ch：" // 会员标签
+    val NICH2_TAG = "【2ch】" // 会员标签
     val TWITTER_TAG = "twitter：" // 会员标签
 
-    private val FILE_DIR = "/Framework" // 应用数据目录
+    val NICH_ENDS = " | 2ch中文网" // 标题后缀
+
+    private val FILE_DIR = "/2chcn" // 应用数据目录
     val DATABASE_DIR = FILE_DIR + "/Database" // 数据库目录
     val DATABASE_FILE = DATABASE_DIR + "/database.db" // 数据库文件
 

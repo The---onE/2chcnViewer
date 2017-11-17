@@ -1,6 +1,8 @@
 package com.xmx.nichcn.module.article
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.View
@@ -12,6 +14,7 @@ import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.CoreConstants
 import com.xmx.nichcn.core.activity.MainActivity
+import com.xmx.nichcn.module.history.HistoryManager
 import kotlinx.android.synthetic.main.activity_article.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
@@ -21,8 +24,10 @@ import java.util.regex.Pattern
  * 文章页Activity
  */
 class ArticleActivity : BaseTempActivity() {
+    private var historyFlag = false // 是否已记入历史记录
+    // 文章地址
     private val mUrl: String by lazy {
-        intent.getStringExtra("url")
+        intent.getStringExtra(ArticleUtil.URL_EXTRA)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -66,9 +71,15 @@ class ArticleActivity : BaseTempActivity() {
                                     // 搜索页
                                     Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
                                 view?.loadUrl(url)
+                        // 图片页
+                            Pattern.matches(CoreConstants.IMAGE_PATTERN, url) -> {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = Uri.parse(url)
+                                startActivity(intent)
+                            }
                         // 文章页
                             Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
-                                startActivity(ArticleActivity::class.java, "url", url)
+                                ArticleUtil.openArticle(this@ArticleActivity, url)
                         }
                     }
                 }
@@ -100,15 +111,30 @@ class ArticleActivity : BaseTempActivity() {
                 super.onReceivedTitle(view, title)
                 title?.apply {
                     var temp = title
+                    // 处理标题后缀
+                    if (temp.endsWith(CoreConstants.NICH_ENDS)) {
+                        temp = temp.substring(0, temp.length
+                                - CoreConstants.NICH_ENDS.length)
+                    }
+                    // 添加历史记录
+                    if (!historyFlag) {
+                        HistoryManager.addHistory(mUrl, temp)
+                        historyFlag = true
+                    }
+                    // 处理标题前缀
                     if (temp.startsWith(CoreConstants.VIP_TAG)) {
                         temp = temp.substring(CoreConstants.VIP_TAG.length)
                     }
                     if (temp.startsWith(CoreConstants.NICH_TAG)) {
                         temp = temp.substring(CoreConstants.NICH_TAG.length)
                     }
+                    if (temp.startsWith(CoreConstants.NICH2_TAG)) {
+                        temp = temp.substring(CoreConstants.NICH2_TAG.length)
+                    }
                     if (temp.startsWith(CoreConstants.TWITTER_TAG)) {
                         temp = temp.substring(CoreConstants.TWITTER_TAG.length)
                     }
+                    // 工具栏显示标题
                     toolbar.title = temp
                 }
             }

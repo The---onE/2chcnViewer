@@ -3,9 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_refresh"
-            android:icon="@android:drawable/ic_menu_rotate"
-            android:title="刷新" />
+            android:id="@+id/nav_history"
+            android:icon="@android:drawable/ic_menu_recent_history"
+            android:title="历史" />
         <item
             android:id="@+id/nav_user"
             android:icon="@android:drawable/ic_menu_myplaces"

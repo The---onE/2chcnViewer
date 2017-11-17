@@ -19,11 +19,11 @@ class OperationLog : ISQLEntity {
     var mTime: Date? = null
 
     // 数据库中的表结构
-    override fun tableFields(): String {
-        return "ID integer not null primary key autoincrement, " +
-                "Operation text, " +
-                "Time integer not null default(0)"
-    }
+    override fun tableFields() =
+            "ID integer not null primary key autoincrement, " +
+                    "Operation text, " +
+                    "Time integer not null default(0)"
+
 
     // 将实体转化为可插入的数据
     override fun getContent(): ContentValues {

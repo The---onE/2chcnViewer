@@ -17,13 +17,16 @@ import com.xmx.nichcn.common.data.DataManager
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.MyApplication
-import com.xmx.nichcn.module.article.ArticleActivity
 import com.xmx.nichcn.module.user.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.regex.Pattern
-import android.support.v4.view.MenuItemCompat
 import android.support.v7.widget.SearchView
+import com.xmx.nichcn.module.article.ArticleUtil
+import com.xmx.nichcn.module.history.HistoryActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.content.Intent
+import android.net.Uri
 
 
 /**
@@ -70,9 +73,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                                 // 搜索页
                                 Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
                             view?.loadUrl(url)
+                    // 图片页
+                        Pattern.matches(CoreConstants.IMAGE_PATTERN, url) -> {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(url)
+                            startActivity(intent)
+                        }
                     // 文章页
                         Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
-                            startActivity(ArticleActivity::class.java, "url", url)
+                            ArticleUtil.openArticle(this@MainActivity, url)
                     }
                 }
                 return true
@@ -121,8 +130,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // 显示选择的选项卡
         when (item.itemId) {
-            R.id.nav_refresh ->
-                webBrowser.reload()
+            R.id.nav_history ->
+                startActivity(HistoryActivity::class.java)
             R.id.nav_user ->
                 startActivity(LoginActivity::class.java)
             R.id.nav_exit ->
@@ -181,5 +190,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         })
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.action_refresh ->
+                webBrowser.reload()
+        }
+        return true
     }
 }
