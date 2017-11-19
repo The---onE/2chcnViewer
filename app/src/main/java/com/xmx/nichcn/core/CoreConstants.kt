@@ -15,7 +15,7 @@ object CoreConstants {
     val IMAGE_PATTERN = ".*img.2chcn.com/.*\\..*" // 图片匹配
     val CATEGORY_PATTERN = ".*2chcn.com/category/.*" // 分类匹配
     val TAG_PATTERN = ".*2chcn.com/tag/.*" // 标签匹配
-    val SEARCH_PATTERN = ".*2chcn.com/\\?s=.*" // 搜索匹配
+    val SEARCH_PATTERN = ".*2chcn.com/(.*)?\\?s=.*" // 搜索匹配
 
     val VIP_TAG = "【会员】" // 会员标签
     val NICH_TAG = "2ch：" // 会员标签

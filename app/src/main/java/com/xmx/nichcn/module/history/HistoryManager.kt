@@ -1,5 +1,7 @@
 package com.xmx.nichcn.module.history
 
+import java.util.*
+
 /**
  * Created by The_onE on 2016/2/24.
  * 历史记录数据管理器，单例对象
@@ -24,7 +26,16 @@ object HistoryManager {
      * @param title 标题
      */
     fun addHistory(url: String, title: String) {
-        historyManager.addHistory(url, title)
+        val histories = historyManager.selectByCondition("time", false,
+                "url='$url'")
+        if (histories != null && histories.isNotEmpty()) {
+            // 若已存在该记录则只更新时间
+            val history = histories.get(0)
+            historyManager.updateData(history.mId, "time=${Date().time}")
+        } else {
+            // 若不存在该记录则添加记录
+            historyManager.addHistory(url, title)
+        }
         updateData()
     }
 
