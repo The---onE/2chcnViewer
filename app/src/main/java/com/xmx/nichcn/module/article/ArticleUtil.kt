@@ -5,6 +5,7 @@ import android.content.Intent
 
 /**
  * Created by The_onE on 2017/11/17.
+ * 处理打开文章页请求
  */
 object ArticleUtil {
     val URL_EXTRA = "url"

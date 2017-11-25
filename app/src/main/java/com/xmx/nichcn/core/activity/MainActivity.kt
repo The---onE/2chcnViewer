@@ -17,18 +17,17 @@ import com.xmx.nichcn.common.data.DataManager
 import com.xmx.nichcn.common.web.BaseWebChromeClient
 import com.xmx.nichcn.common.web.BaseWebViewClient
 import com.xmx.nichcn.core.MyApplication
-import com.xmx.nichcn.module.user.LoginActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.tool_bar.*
-import java.util.regex.Pattern
 import android.support.v7.widget.SearchView
 import com.xmx.nichcn.module.article.ArticleUtil
 import com.xmx.nichcn.module.history.HistoryActivity
-import android.support.v4.content.ContextCompat.startActivity
 import android.content.Intent
 import android.net.Uri
+import com.xmx.nichcn.module.browser.UrlConstants
+import com.xmx.nichcn.module.browser.UrlFilter
+import com.xmx.nichcn.module.user.UserUtil
 import com.xmx.nichcn.utils.StringUtil
-
 
 /**
  * Created by The_onE on 2017/2/15.
@@ -64,27 +63,33 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         webBrowser.webViewClient = object : BaseWebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 if (url != null && url.isNotBlank()) {
-                    when {
-                    // 首页
-                        Pattern.matches(CoreConstants.HOME_PATTERN, url) ||
-                                // 分类页
-                                Pattern.matches(CoreConstants.CATEGORY_PATTERN, url) ||
-                                // 标签页
-                                Pattern.matches(CoreConstants.TAG_PATTERN, url) ||
-                                // 搜索页
-                                Pattern.matches(CoreConstants.SEARCH_PATTERN, url) ->
+                    when (UrlFilter.filterUrl(url)) {
+                    // 首页 // 分类页 标签页 搜索页
+                        UrlFilter.HOME_PAGE, UrlFilter.CATEGORY_PAGE,
+                        UrlFilter.TAG_PAGE, UrlFilter.SEARCH_PAGE -> {
                             view?.loadUrl(url)
+                        }
                     // 图片页
-                        Pattern.matches(CoreConstants.IMAGE_PATTERN, url) -> {
+                        UrlFilter.IMAGE_PAGE -> {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.data = Uri.parse(url)
                             startActivity(intent)
                         }
                     // 文章页
-                        Pattern.matches(CoreConstants.ARTICLE_PATTERN, url) ->
+                        UrlFilter.ARTICLE_PAGE -> {
                             ArticleUtil.openArticle(this@MainActivity, url)
-                        else ->
+                        }
+                    // 用户页
+                        UrlFilter.AUTHOR_PAGE -> {
+                            UserUtil.openUser(this@MainActivity, url)
+                        }
+                    // 其他页
+                        UrlFilter.UNKNOWN_PAGE -> {
                             StringUtil.copyToClipboard(this@MainActivity, url)
+                        }
+                        else -> {
+                            StringUtil.copyToClipboard(this@MainActivity, url)
+                        }
                     }
                 }
                 return true
@@ -126,7 +131,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // 初始化浏览器
         initBrowser()
         // 打开网页
-        webBrowser.loadUrl(CoreConstants.HOME_URL)
+        webBrowser.loadUrl(UrlConstants.HOME_URL)
     }
 
     // 侧滑菜单项点击事件
@@ -136,7 +141,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_history ->
                 startActivity(HistoryActivity::class.java)
             R.id.nav_user ->
-                startActivity(LoginActivity::class.java)
+                UserUtil.openSelf(this@MainActivity)
             R.id.nav_exit ->
                 MyApplication.getInstance().exit()
         }
@@ -185,7 +190,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null && query.isNotBlank()) {
-                    webBrowser.loadUrl("${CoreConstants.SEARCH_URL}$query")
+                    webBrowser.loadUrl("${UrlConstants.SEARCH_URL}$query")
                 }
                 return false
             }
